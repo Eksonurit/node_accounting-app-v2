@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid');
+const { uuidv4 } = require('uuid');
 
 let users = [
   {
