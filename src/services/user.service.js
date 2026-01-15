@@ -1,23 +1,20 @@
-const { v4: uuidv4 } = require('uuid/dist/v4');
-
-let users = [
-  {
-    id: 0,
-    name: 'string',
-  },
-];
+let users = [{ id: 1, name: 'John Doe' }];
 
 const getAll = () => {
+  if (users.length === 0) {
+    return [];
+  }
+
   return users;
 };
 
-const getById = (id) => {
-  return users.find(users.id === id) || null;
+const getUserById = (id) => {
+  return users.find((user) => Number(user.id) === Number(id)) || null;
 };
 
 const create = (name) => {
   const user = {
-    id: uuidv4(),
+    id: Date.now(),
     name,
   };
 
@@ -26,22 +23,29 @@ const create = (name) => {
   return user;
 };
 
-const update = ({ id, name }) => {
-  const user = getById(id);
+const update = (id, name) => {
+  const user = getUserById(id);
 
-  Object.assign(user, { id, name });
+  if (!user) {
+    return null;
+  }
+
+  user.name = name;
 
   return user;
 };
 
 const remove = (id) => {
-  users = users.filter((user) => user.id !== id);
+  users = users.filter((user) => Number(user.id) !== Number(id));
 };
 
 module.exports = {
   getAll,
-  getById,
+  getUserById,
   create,
   update,
   remove,
+  clearUsers: () => {
+    users = [];
+  },
 };

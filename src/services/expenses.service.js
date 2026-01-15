@@ -1,29 +1,18 @@
-const uuidv4 = require('uuidv4');
+let expenses = [];
 
-let expenses = [
-  {
-    id: 0,
-    userId: 0,
-    spentAt: '2026-01-11T19:46:15.894Z',
-    title: 'string',
-    amount: 0,
-    category: 'string',
-    note: 'string',
-  },
-];
 const getAll = () => {
   return expenses;
 };
 
 const getById = (id) => {
-  return expenses.find(expenses.id === id) || null;
+  return expenses.find((expense) => Number(expense.id) === Number(id)) || null;
 };
 
-const create = (title, amount, category, note) => {
+const create = ({ title, amount, category, note, userId, spentAt }) => {
   const expnese = {
-    id: uuidv4(),
-    userId: 0,
-    spentAt: new Date().toISOString(),
+    id: Date.now() + Math.random(),
+    userId: userId,
+    spentAt: spentAt || new Date().toISOString(),
     title,
     amount,
     category,
@@ -36,18 +25,19 @@ const create = (title, amount, category, note) => {
 };
 
 const update = (id, updateData) => {
-  const index = getById(id);
+  const expense = getById(id);
 
-  expenses[index] = {
-    ...expenses[index],
-    ...updateData,
-  };
+  if (!expense) {
+    return null;
+  }
 
-  return expenses[index];
+  Object.assign(expense, updateData);
+
+  return expense;
 };
 
 const remove = (id) => {
-  expenses = expenses.filter((expense) => expense.id !== id);
+  expenses = expenses.filter((expense) => Number(expense.id) !== Number(id));
 };
 
 module.exports = {
@@ -56,4 +46,7 @@ module.exports = {
   create,
   update,
   remove,
+  clearService: () => {
+    expenses = [];
+  },
 };

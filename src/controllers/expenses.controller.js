@@ -1,3 +1,5 @@
+const { getUserById } = require('../services/user.service');
+
 const {
   getAll,
   getById,
@@ -6,8 +8,36 @@ const {
   remove,
 } = require('../services/expenses.service');
 
-const get = (req, res) => {
-  res.send(getAll());
+const getExpenses = (req, res) => {
+  const { categories, userId, from, to } = req.query;
+
+  let result = getAll();
+
+  if (categories !== undefined) {
+    result = result.filter(
+      (exp) => exp.category.toLowerCase() === categories.toLowerCase().trim(),
+    );
+  }
+
+  if (userId !== undefined) {
+    result = result.filter((exp) => Number(exp.userId) === Number(userId));
+  }
+
+  if (from) {
+    const fromTime = new Date(from).getTime();
+
+    result = result.filter(
+      (exp) => new Date(exp.spentAt).getTime() >= fromTime,
+    );
+  }
+
+  if (to) {
+    const toTime = new Date(to).getTime();
+
+    result = result.filter((exp) => new Date(exp.spentAt).getTime() <= toTime);
+  }
+
+  res.send(result);
 };
 
 const getOne = (req, res) => {
@@ -24,7 +54,19 @@ const getOne = (req, res) => {
 };
 
 const createExpense = (req, res) => {
-  const { title, amount, category, note } = req.body;
+  const { title, amount, category, note, userId, spentAt } = req.body;
+
+  if (
+    !title ||
+    !amount ||
+    !category ||
+    !userId ||
+    !note ||
+    !spentAt ||
+    !getUserById(userId)
+  ) {
+    return res.sendStatus(400);
+  }
 
   res.statusCode = 201;
 
@@ -33,6 +75,8 @@ const createExpense = (req, res) => {
     amount,
     category,
     note,
+    userId,
+    spentAt,
   });
 
   res.send(newExpense);
@@ -40,7 +84,6 @@ const createExpense = (req, res) => {
 
 const updateExpense = (req, res) => {
   const { id } = req.params;
-  const { title, amount, category, note } = req.body;
 
   const expense = getById(id);
 
@@ -50,20 +93,13 @@ const updateExpense = (req, res) => {
     return;
   }
 
-  if (typeof title !== 'string') {
-    res.sendStatus(422);
-
-    return;
+  if (req.body.title !== undefined && typeof req.body.title !== 'string') {
+    return res.sendStatus(422);
   }
 
-  const updatedUser = update(id, {
-    title,
-    amount,
-    category,
-    note,
-  });
+  const updatedExpense = update(id, req.body);
 
-  res.send(updatedUser);
+  res.send(updatedExpense);
 };
 
 const removeExpense = (req, res) => {
@@ -81,7 +117,7 @@ const removeExpense = (req, res) => {
 };
 
 module.exports = {
-  get,
+  getExpenses,
   getOne,
   createExpense,
   updateExpense,

@@ -1,6 +1,6 @@
 const express = require('express');
 const {
-  get,
+  getExpenses,
   getOne,
   createExpense,
   updateExpense,
@@ -9,13 +9,13 @@ const {
 
 const expenseRouter = express.Router();
 
-expenseRouter.get('/', get);
+expenseRouter.get('/', getExpenses);
 
 expenseRouter.get('/:id', getOne);
 
 expenseRouter.post('/', express.json(), createExpense);
 
-expenseRouter.put('/:id', express.json(), updateExpense);
+expenseRouter.patch('/:id', express.json(), updateExpense);
 
 expenseRouter.delete('/:id', removeExpense);
 

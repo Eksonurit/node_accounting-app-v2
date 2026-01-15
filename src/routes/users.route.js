@@ -15,10 +15,10 @@ userRouter.get('/:id', getOne);
 
 userRouter.post('/', express.json(), createUser);
 
-userRouter.put('/:id', express.json(), updateUser);
+userRouter.patch('/:id', express.json(), updateUser);
 
 userRouter.delete('/:id', removeUser);
 
 module.exports = {
-  userRouter: userRouter,
+  userRouter,
 };

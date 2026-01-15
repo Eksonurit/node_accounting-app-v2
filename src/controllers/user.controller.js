@@ -1,6 +1,6 @@
 const {
   getAll,
-  getById,
+  getUserById,
   create,
   update,
   remove,
@@ -13,7 +13,7 @@ const get = (req, res) => {
 const getOne = (req, res) => {
   const { id } = req.params;
 
-  const user = getById(id);
+  const user = getUserById(id);
 
   if (!user) {
     res.sendStatus(404);
@@ -27,26 +27,19 @@ const createUser = (req, res) => {
   const { name } = req.body;
 
   if (!name) {
-    res.sendStatus(422);
+    res.sendStatus(400);
+
+    return;
   }
 
   const user = create(name);
 
-  res.statusCode = 201;
-  res.send(user);
+  res.status(201).send(user);
 };
 
 const updateUser = (req, res) => {
   const { id } = req.params;
   const { name } = req.body;
-
-  const user = getById(id);
-
-  if (!user) {
-    res.sendStatus(404);
-
-    return;
-  }
 
   if (typeof name !== 'string') {
     res.sendStatus(422);
@@ -56,13 +49,17 @@ const updateUser = (req, res) => {
 
   const updatedUser = update(id, name);
 
-  res.send(updatedUser);
+  if (!updatedUser) {
+    return res.sendStatus(404);
+  }
+
+  res.status(200).send(updatedUser);
 };
 
 const removeUser = (req, res) => {
   const { id } = req.params;
 
-  if (!getById(id)) {
+  if (!getUserById(id)) {
     res.sendStatus(404);
 
     return;
