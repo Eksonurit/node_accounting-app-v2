@@ -42,7 +42,7 @@ const updateUser = (req, res) => {
   const { name } = req.body;
 
   if (typeof name !== 'string') {
-    res.sendStatus(422);
+    res.sendStatus(400);
 
     return;
   }

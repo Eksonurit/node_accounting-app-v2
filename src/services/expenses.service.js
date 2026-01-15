@@ -8,7 +8,7 @@ const getById = (id) => {
   return expenses.find((expense) => Number(expense.id) === Number(id)) || null;
 };
 
-const create = ({ title, amount, category, note, userId, spentAt }) => {
+const create = ({ title, amount, category, note = '', userId, spentAt }) => {
   const expnese = {
     id: Date.now() + Math.random(),
     userId: userId,

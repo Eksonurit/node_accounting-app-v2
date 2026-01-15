@@ -61,7 +61,6 @@ const createExpense = (req, res) => {
     !amount ||
     !category ||
     !userId ||
-    !note ||
     !spentAt ||
     !getUserById(userId)
   ) {
