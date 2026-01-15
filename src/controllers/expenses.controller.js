@@ -93,7 +93,7 @@ const updateExpense = (req, res) => {
   }
 
   if (req.body.title !== undefined && typeof req.body.title !== 'string') {
-    return res.sendStatus(422);
+    return res.sendStatus(400);
   }
 
   const updatedExpense = update(id, req.body);
